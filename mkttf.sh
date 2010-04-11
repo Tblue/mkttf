@@ -2,7 +2,7 @@
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from the BDF files.
 #
-#       Copyright (c) 2009 by Tilman Blumenbach
+#       Copyright (c) 2009-2010 by Tilman Blumenbach
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ for weight in normal bold italic; do
 	echo "Generating ${weight} font..."
 
 	pushd "$weight" 1>/dev/null
-	"${MYDIR}/mkttf.ff" "$TERMINUS_DIR"/ter-u*`expr substr "$weight" 1 1`.bdf
+	"${MYDIR}/mkttf.ff" 'Terminus (TTF)' "$TERMINUS_DIR"/ter-u*`expr substr "$weight" 1 1`.bdf
 	popd 1>/dev/null
 
 	echo
