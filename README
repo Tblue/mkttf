@@ -1,14 +1,26 @@
-The mkttf.sh script will generate medium (normal), bold and italic versions of the Terminus font.
-It will create three directories ("normal", "bold", "italic") in the current working directory.
+The mkttf.sh script generates medium (normal), bold and italic versions
+of the Terminus font. It will create three directories ("normal", "bold"
+and "italic") in the current working directory.
 
-The fonts are generated using FontForge, which is available from http://fontforge.sf.net .
+To use mktff.sh, you need the following tools installed in your PATH:
+  - A POSIX-compliant shell.
+  - mkitalic (generates the italic font): http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html
+  - FontForge (BDF -> TTF conversion): http://fontforge.sf.net
+  - AutoTrace 0.31.1 (outline generation): http://autotrace.sf.net
 
-To run the script (or rather to generate the italic font), you need the mkitalic utility, which is
-available from http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html .
-Make sure it is in your PATH before you invoke mkttf.sh.
+The script takes one argument: The directory containing the Terminus BDF
+files. The italic versions of the BDF files will be placed there.
 
-The script takes one argument, the directory containing the Terminus BDF files. The italic versions
-of the BDF files will be placed there.
+Additionally to generating TTF fonts, the script will also generate a SFD
+file (FontForge's native file format) for each font weight.
 
-Apart from generating TTF fonts, the script will also generate a SFD file (FontForge's native file
-format) for each font weight.
+autotrace.sh and mkttf.ff should be fairly generic, so if you want to generate
+TTF versions of another font, you should only need to modify mkttf.sh.
+
+Have fun!
+
+- Tilman Blumenbach <tilman@ax86.net>
+
+
+NOTE: This README file is licensed under the same license as the other
+      source files -- the BSD license.
