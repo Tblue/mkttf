@@ -1,0 +1,26 @@
+# Contributor: Tilman Blumenbach <tilman@ax86.net>
+
+pkgname='terminus-font-ttf'
+pkgver=4.30
+pkgrel=5
+pkgdesc="A superb, monospace bitmap font (TTF version, with ge1 patch applied)"
+arch=('any')
+url="http://www.ax86.net/2009/11/03/generating-up-to-date-ttf-files-for-the-terminus-font"
+license=('GPL')
+depends=('fontconfig')
+install='terminus-font-ttf.install'
+source=("http://files.ax86.net/terminus-ttf/${pkgver}/TerminusBold.ttf"
+        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMedium.ttf"
+        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMediumItalic.ttf")
+
+build()
+{
+	cd "${srcdir}"
+
+	mkdir -p "${pkgdir}/usr/share/fonts/TTF"
+	cp *.ttf "${pkgdir}/usr/share/fonts/TTF"
+}
+
+md5sums=('7f8455bf79e634b3f4f57cbd4350d8aa'
+         'ec67e0024613a6cc896197e6ba9a7b4e'
+         'fdd560a565281e9670f625fa0d60ed6d')
