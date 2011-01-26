@@ -50,6 +50,14 @@ endloop
 // Import the last BDF font into the glyph background:
 Import( $argv[$argc - 1], 1 );
 
+// Set some (non-persistent) preferences to make sure autotracing works
+// as we expect.
+// We want to use Potrace:
+SetPref( "PreferPotrace", 1 );
+// Disable corner smoothing.
+// NB: Terminus-specific.
+SetPref( "AutotraceArgs", "-a -1" );
+
 // AutoTrace all glyphs, add extrema and simplify:
 Print( "Processing glyphs..." );
 SelectAll();

@@ -105,9 +105,6 @@ for bdf in "$TERMINUS_DIR"/ter-u*n.bdf; do
 done
 
 # Generate the TTF fonts.
-# This tells FontForge to use our AutoTrace wrapper.
-export AUTOTRACE="${MYDIR}/autotrace.sh"
-
 for weight in normal bold italic; do
 	echo "Generating ${weight} font..."
 
