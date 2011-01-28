@@ -2,7 +2,7 @@
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from its BDF files.
 #
-#       Copyright (c) 2009-2010 by Tilman Blumenbach <tilman@ax86.net>
+#       Copyright (c) 2009-2011 by Tilman Blumenbach <tilman@ax86.net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -31,16 +31,20 @@
 #       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+### Settings ###
+# If set, the source dir needs to contain this path to be considered valid.
+SRCDIR_TEST='ter-u12n.bdf'
+
+
 ### Helper functions ###
 
 # Display an error message and exit, using a custom return code.
 # Args   : $1   - The return code.
 #          $... - The error message to show.
-# Echoes : Nothing.
+# Echoes : The error message, prefixed with the string "Error: ".
 # Returns: Nothing.
-error()
-{
-	ret=$1
+error() {
+	ret="$1"
 	shift
 
 	echo "Error: $*"
@@ -51,8 +55,7 @@ error()
 # Args   : $1 - The path.
 # Echoes : The absolute path.
 # Returns: 0
-mkabs()
-{
+mkabs() {
 	case "$1" in
 		/*)
 			# Path is already absolute:
@@ -69,48 +72,66 @@ mkabs()
 
 
 # The absolute path to this file's directory.
-MYDIR=`dirname "$0"`
-MYDIR=`mkabs "$MYDIR"`
+MYDIR="$(mkabs "$(dirname "$0")")"
 
 ### Start of main script ###
 
-if [ $# -lt 1 ]; then
+if [ $# -lt 1 ]
+then
 	echo 'Usage:'
-	echo " ${0} terminus-srcdir"
+	echo " ${0} srcdir [fontver]"
 	exit 1
 fi
 
 mkitalic -h 1>/dev/null 2>&1
-if [ $? -eq 127 ]; then
+if [ $? -eq 127 ]
+then
 	# POSIX specifies a return code of 127 on a command search failure.
 	error 2 'mkitalic not found in your PATH.'
 fi
 
 # The path to the directory where the BDF files reside.
-TERMINUS_DIR=`mkabs "$1"`
+SRCDIR="$(mkabs "$1")"
 
-if [ ! -f "${TERMINUS_DIR}/ter-u12n.bdf" ]; then
-	error 3 'The given directory does not look like a Terminus font source directory:' \
-		'It does not contain a file named "ter-u12n.bdf".'
+if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]
+then
+	error 3 'The given directory does not look like a valid source directory:' \
+		"It does not contain \"${SRCDIR_TEST}\"."
 fi
 
 # -p to suppress errors.
 mkdir -p normal bold italic || error 4 'Could not create target directories.'
 
+## NOTE: The following code is Terminus-specific!
+
 # Generate italic BDF files:
 echo 'Generating italic BDF files...'
-for bdf in "$TERMINUS_DIR"/ter-u*n.bdf; do
-	BDF_BASENAME=`basename "$bdf" n.bdf`
-	mkitalic < "$bdf" > "${TERMINUS_DIR}/${BDF_BASENAME}i.bdf"
+for bdf in "$SRCDIR"/ter-u*n.bdf
+do
+	BDF_BASENAME="$(basename "$bdf" n.bdf)"
+	mkitalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}i.bdf"
 done
 
 # Generate the TTF fonts.
-for weight in normal bold italic; do
+for weight in normal bold italic
+do
 	echo "Generating ${weight} font..."
 
+	MORE_ARGS=''
+	if [ "$weight" = italic ]
+	then
+		MORE_ARGS='-w Italic'
+	fi
+	if [ -n "$2" ]
+	then
+		MORE_ARGS="$MORE_ARGS -V ${2}"
+	fi
+
 	cd "$weight"
-	fontforge -lang=ff -script "${MYDIR}/mkttf.ff" 'Terminus (TTF)' \
-		"$TERMINUS_DIR"/ter-u*`echo "$weight"|cut -b 1`.bdf
+	fontforge -lang=ff -script "${MYDIR}/mkttf.ff"  -f 'Terminus (TTF)' \
+		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
+		-A '-a -1' $MORE_ARGS \
+		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1).bdf"
 	cd - 1>/dev/null
 
 	echo

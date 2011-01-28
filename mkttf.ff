@@ -2,7 +2,7 @@
 /*      This fontforge script converts a set of BDF files into a TTF font
  *      (and a SFD file).
  *      
- *      Copyright (c) 2009-2010 by Tilman Blumenbach <tilman@ax86.net>
+ *      Copyright (c) 2009-2011 by Tilman Blumenbach <tilman@ax86.net>
  *      All rights reserved.
  *      
  *      Redistribution and use in source and binary forms, with or without
@@ -32,52 +32,164 @@
  *      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-if( $argc < 3 )
-	Print( "Usage:\n ", $argv[0], " font-family bdf-file...\n" );
-	Print( "The BDF files have to be sorted by font size in ascending order." );
-	Quit( 1 );
+/// Options ///
+fontname            = ""
+familyname          = ""
+fullname            = ""
+weight              = ""
+copyright           = ""
+copyright_append    = 0
+fontversion         = ""
+PreferPotrace       = 1
+AutotraceArgs       = ""
+
+/// Option parsing ///
+/* This behaves similar to POSIX getopt():
+ *   - Options start with a dash.
+ *   - Options letters are one char (as the name suggests).
+ *   - An argument "--" terminates option parsing. The same is valid for
+ *     a single "-", but in that case, it is not consumed but treated like
+ *     a non-option argument.
+ *
+ *   However, combining multiple option letters into one argument (e. g.
+ *   "-bar" for the options b, a and r) is NOT supported.
+ */
+while( $argc > 1 && $1 != "-" && Strsub( $1, 0, 1 ) == "-" )
+    if( $1 == "--" )
+        // Option parsing terminator encountered.
+        shift
+        break
+    elseif( Strlen( $1 ) != 2 )
+        Print( "E: Wrongly formatted option (use '--'?): ", $1 )
+        Quit( 1 )
+    endif
+
+    opt = Strsub( $1, 1 )
+
+    // Do we need an argument?
+    optarg = ""
+    if( Strstr( "nfNwcCVA", opt ) != -1 )
+        if( $argc < 3 )
+            Print( "E: Option needs an argument: ", $1 )
+            Quit( 1 )
+        endif
+
+        optarg = $2
+        shift
+    endif
+
+    if( opt == "h" )
+        // Show help message
+        // Duplicate code since FontForge does not allow user-defined
+        // procedures.
+        Print( "Usage:\n ", $0, " [options] bdf-file...\n" )
+        Print( "The BDF files have to be sorted by font size in ascending order.\n" )
+
+        Print( "Options:" )
+        Print( " -h        Show this help message and exit." )
+        Print( " -n <arg>  Set font name." )
+        Print( " -f <arg>  Set font family." )
+        Print( " -N <arg>  Set full font name (for display)." )
+        Print( " -w <arg>  Set weight." )
+        Print( " -c <arg>  Set copyright notice." )
+        Print( " -C <arg>  Set copyright notice (append to existing)." )
+        Print( " -V <arg>  Set font version." )
+        Print( " -a        Prefer AutoTrace over Potrace." )
+        Print( " -A <arg>  Additional arguments for AutoTrace/Potrace." )
+
+        Quit( 1 )
+    elseif( opt == "n" )
+        // Set font name
+        fontname = optarg
+    elseif( opt == "f" )
+        // Set font family
+        familyname = optarg
+    elseif( opt == "N" )
+        // Set full name
+        fullname = optarg
+    elseif( opt == "w" )
+        // Set weight
+        weight = optarg
+    elseif( opt == "c" || opt == "C" )
+        // Set copyright notice
+        copyright = optarg
+        copyright_append = ( opt == "C" )
+    elseif( opt == "V" )
+        // Set font version
+        fontversion = optarg
+    elseif( opt == "a" )
+        PreferPotrace = 0
+    elseif( opt == "A" )
+        AutotraceArgs = optarg
+    else
+        Print( "E: Unrecognized option: ", $1 )
+        Quit( 1 )
+    endif
+
+    shift
+endloop
+
+/// Main script ///
+if( $argc < 2 )
+    // Duplicate code since FontForge does not allow user-defined
+    // procedures.
+    Print( "Usage:\n ", $0, " [options] bdf-file...\n" )
+    Print( "The BDF files have to be sorted by font size in ascending order.\n" )
+
+    Print( "Options:" )
+    Print( " -h        Show this help message and exit." )
+    Print( " -n <arg>  Set font name." )
+    Print( " -f <arg>  Set font family." )
+    Print( " -N <arg>  Set full font name (for display)." )
+    Print( " -w <arg>  Set weight." )
+    Print( " -c <arg>  Set copyright notice." )
+    Print( " -C <arg>  Set copyright notice (append to existing)." )
+    Print( " -V <arg>  Set font version." )
+    Print( " -a        Prefer AutoTrace over Potrace." )
+    Print( " -A <arg>  Additional arguments for AutoTrace/Potrace." )
+
+    Quit( 1 )
 endif
 
-Open( $argv[2] );
+// Set Fontforge options.
+// Do we want to prefer Potrace over Autotrace in case both are installed?
+SetPref( "PreferPotrace", PreferPotrace )
+// Set any optional Autotrace arguments we may have:
+SetPref( "AutotraceArgs", AutotraceArgs )
+
+// Open the main font:
+Open( $1 )
 
 // Import the other BDF files into this font:
-Print( "Importing ", $argc - 3, " additional fonts..." );
-i = 3;
+Print( "Importing ", $argc - 2, " additional fonts..." )
+i = 2
 while( i < $argc )
-	Import( $argv[i++] );
+    Import( $argv[i++] )
 endloop
 
-// Import the last BDF font into the glyph background:
-Import( $argv[$argc - 1], 1 );
-
-// Set some (non-persistent) preferences to make sure autotracing works
-// as we expect.
-// We want to use Potrace:
-SetPref( "PreferPotrace", 1 );
-// Disable corner smoothing.
-// NB: Terminus-specific.
-SetPref( "AutotraceArgs", "-a -1" );
+// Import the last (biggest) BDF font into the glyph background:
+Import( $argv[$argc - 1], 1 )
 
 // AutoTrace all glyphs, add extrema and simplify:
-Print( "Processing glyphs..." );
-SelectAll();
+Print( "Processing glyphs..." )
+SelectAll()
 foreach
-	AutoTrace();
-	AddExtrema();
-	Simplify();
+    AutoTrace()
+    AddExtrema()
+    Simplify()
 endloop
 
-weight = "";
-if( Strrstr( $fontname, "Italic" ) != -1 )
-	// The weight should be italic:
-	weight = "Italic";
+// Do we want to append to the current copyright notice?
+if( copyright_append )
+    copyright = $copyright + copyright
 endif
 
-// Set font family name and weight:
-SetFontNames( "", $argv[1], "", weight );
+// Now set font properties:
+SetFontNames( fontname, familyname, fullname, weight, copyright, fontversion )
 
-Print( "Saving..." );
-Generate( $fontname + ".ttf", "ttf" );
-Save( $fontname + ".sfd" );
+// Finally, save the files!
+Print( "Saving..." )
+Generate( $fontname + ".ttf", "ttf" )
+Save( $fontname + ".sfd" )
 
-Print( "Done." );
+Print( "Done." )
