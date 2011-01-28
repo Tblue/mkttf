@@ -118,13 +118,9 @@ do
 	echo "Generating ${weight} font..."
 
 	MORE_ARGS=''
-	if [ "$weight" = italic ]
-	then
-		MORE_ARGS='-w Italic'
-	fi
 	if [ -n "$2" ]
 	then
-		MORE_ARGS="$MORE_ARGS -V ${2}"
+		MORE_ARGS="-V ${2}"
 	fi
 
 	cd "$weight"
