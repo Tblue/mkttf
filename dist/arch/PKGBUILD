@@ -2,7 +2,7 @@
 
 pkgname='terminus-font-ttf'
 pkgver=4.32
-pkgrel=1
+pkgrel=2
 pkgdesc="A superb, monospace bitmap font (TTF version, with ge1 patch applied)"
 arch=('any')
 url="http://www.ax86.net/2009/11/03/generating-up-to-date-ttf-files-for-the-terminus-font"
@@ -24,7 +24,7 @@ build()
     install -Dm 644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
 }
 
-md5sums=('5adb6402413b6a62b6263e4d848d93bd'
-         'bb94b2b213f048a73f0db64ffe7a3534'
-         '07b731eec3a604780820b585d8a8e120'
+md5sums=('c98684a139b09c523e4933a4eb67b844'
+         '4c097fea98d89260612bb52182778ed2'
+         '9c85fc1ff91d55aa0b00de3a19e680d1'
          '7b6a7b6ed0cb0cd6e81f088b38738f47')
