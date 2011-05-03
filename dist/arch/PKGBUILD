@@ -1,9 +1,9 @@
 # Contributor: Tilman Blumenbach <tilman@ax86.net>
 
 pkgname='terminus-font-ttf'
-pkgver=4.32
-pkgrel=2
-pkgdesc="A superb, monospace bitmap font (TTF version, with ge1 patch applied)"
+pkgver=4.34
+pkgrel=1
+pkgdesc="Monospaced bitmap font designed for long work with computers (TTF version)"
 arch=('any')
 url="http://www.ax86.net/2009/11/03/generating-up-to-date-ttf-files-for-the-terminus-font"
 license=('custom:OFL')
