@@ -24,7 +24,7 @@ build()
     install -Dm 644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
 }
 
-md5sums=('c98684a139b09c523e4933a4eb67b844'
-         '4c097fea98d89260612bb52182778ed2'
-         '9c85fc1ff91d55aa0b00de3a19e680d1'
+md5sums=('4cbfebbf489512e5f2f30753b7d055cd'
+         '8e3a047a8cda215acee9f92a1a270f91'
+         'cd428458c8962553765e8cd08c6fde25'
          '7b6a7b6ed0cb0cd6e81f088b38738f47')
