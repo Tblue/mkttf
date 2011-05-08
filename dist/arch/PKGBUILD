@@ -2,24 +2,26 @@
 
 pkgname='terminus-font-ttf'
 pkgver=4.34
-pkgrel=1
+pkgrel=2
 pkgdesc="Monospaced bitmap font designed for long work with computers (TTF version)"
 arch=('any')
 url="http://www.ax86.net/2009/11/03/generating-up-to-date-ttf-files-for-the-terminus-font"
 license=('custom:OFL')
 depends=('fontconfig' 'xorg-font-utils')
 install='terminus-font-ttf.install'
-source=("http://files.ax86.net/terminus-ttf/${pkgver}/TerminusBold.ttf"
-        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMedium.ttf"
-        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMediumItalic.ttf"
+source=("http://files.ax86.net/terminus-ttf/${pkgver}/TerminusBold-${pkgver}.ttf"
+        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMedium-${pkgver}.ttf"
+        "http://files.ax86.net/terminus-ttf/${pkgver}/TerminusMediumItalic-${pkgver}.ttf"
         "http://files.ax86.net/terminus-ttf/${pkgver}/COPYING")
 
 build()
 {
 	cd "${srcdir}"
 
-	mkdir -p "${pkgdir}/usr/share/fonts/TTF"
-	cp *.ttf "${pkgdir}/usr/share/fonts/TTF"
+    for i in *.ttf; do
+        local destname="$(echo "$i" | sed 's|-[[:digit:].]\{1,\}\.ttf$|.ttf|')"
+        install -Dm 644 "$i" "${pkgdir}/usr/share/fonts/TTF/${destname}"
+    done
 
     install -Dm 644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
 }
