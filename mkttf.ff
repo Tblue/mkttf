@@ -189,7 +189,13 @@ SetFontNames( fontname, familyname, fullname, weight, copyright, fontversion )
 
 // Finally, save the files!
 Print( "Saving..." )
-Generate( $fontname + ".ttf", "ttf" )
-Save( $fontname + ".sfd" )
+if( fontversion != "" )
+    basename = $fontname + "-" + fontversion
+else
+    basename = $fontname
+endif
+
+Generate( basename + ".ttf", "ttf" )
+Save( basename + ".sfd" )
 
 Print( "Done." )
