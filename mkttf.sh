@@ -70,6 +70,24 @@ mkabs() {
 	esac
 }
 
+# Check if an executable exists in the PATH.
+# Args   : $1 - Basename of executable to check for.
+# Echoes : Nothing.
+# Returns: 0 on success, 1 on failure.
+in_path() {
+    __OLD_IFS="$IFS"
+    IFS=:
+
+    for __dir in $PATH; do
+        if [ -x "${__dir:-.}/${1}" ]; then
+            IFS="$__OLD_IFS"
+            return 0
+        fi
+    done
+
+    IFS="$__OLD_IFS"
+    return 1
+}
 
 # The absolute path to this file's directory.
 MYDIR="$(mkabs "$(dirname "$0")")"
@@ -83,11 +101,11 @@ then
 	exit 1
 fi
 
-mkitalic -h 1>/dev/null 2>&1
-if [ $? -eq 127 ]
-then
-	# POSIX specifies a return code of 127 on a command search failure.
+# Check for needed programs:
+if ! in_path mkitalic; then
 	error 2 'mkitalic not found in your PATH.'
+elif ! in_path potrace; then
+    error 2 'potrace not found in your PATH.'
 fi
 
 # The path to the directory where the BDF files reside.
