@@ -2,7 +2,7 @@
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from its BDF files.
 #
-#       Copyright (c) 2009-2011 by Tilman Blumenbach <tilman@ax86.net>
+#       Copyright (c) 2009-2011 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without

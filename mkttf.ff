@@ -2,7 +2,7 @@
 /*      This fontforge script converts a set of BDF files into a TTF font
  *      (and a SFD file).
  *      
- *      Copyright (c) 2009-2011 by Tilman Blumenbach <tilman@ax86.net>
+ *      Copyright (c) 2009-2011 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
  *      All rights reserved.
  *      
  *      Redistribution and use in source and binary forms, with or without
