@@ -2,7 +2,7 @@
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from its BDF files.
 #
-#       Copyright (c) 2009-2011 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2009-2013 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,8 @@ SRCDIR_TEST='ter-u12n.bdf'
 #          $... - The error message to show.
 # Echoes : The error message, prefixed with the string "Error: ".
 # Returns: Nothing.
-error() {
+error()
+{
 	ret="$1"
 	shift
 
@@ -55,7 +56,8 @@ error() {
 # Args   : $1 - The path.
 # Echoes : The absolute path.
 # Returns: 0
-mkabs() {
+mkabs()
+{
 	case "$1" in
 		/*)
 			# Path is already absolute:
@@ -74,7 +76,8 @@ mkabs() {
 # Args   : $1 - Basename of executable to check for.
 # Echoes : Nothing.
 # Returns: 0 on success, 1 on failure.
-in_path() {
+in_path()
+{
     __OLD_IFS="$IFS"
     IFS=:
 
@@ -94,8 +97,7 @@ MYDIR="$(mkabs "$(dirname "$0")")"
 
 ### Start of main script ###
 
-if [ $# -lt 1 ]
-then
+if [ $# -lt 1 ]; then
 	echo 'Usage:'
 	echo " ${0} srcdir [fontver]"
 	exit 1
@@ -111,8 +113,7 @@ fi
 # The path to the directory where the BDF files reside.
 SRCDIR="$(mkabs "$1")"
 
-if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]
-then
+if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 	error 3 'The given directory does not look like a valid source directory:' \
 		"It does not contain \"${SRCDIR_TEST}\"."
 fi
@@ -124,20 +125,17 @@ mkdir -p normal bold italic || error 4 'Could not create target directories.'
 
 # Generate italic BDF files:
 echo 'Generating italic BDF files...'
-for bdf in "$SRCDIR"/ter-u*n.bdf
-do
+for bdf in "$SRCDIR"/ter-u*n.bdf; do
 	BDF_BASENAME="$(basename "$bdf" n.bdf)"
 	mkitalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}i.bdf"
 done
 
 # Generate the TTF fonts.
-for weight in normal bold italic
-do
+for weight in normal bold italic; do
 	echo "Generating ${weight} font..."
 
 	MORE_ARGS=''
-	if [ -n "$2" ]
-	then
+	if [ -n "$2" ]; then
 		MORE_ARGS="-V ${2}"
 	fi
 
