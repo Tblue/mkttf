@@ -134,15 +134,10 @@ done
 for weight in normal bold italic; do
 	echo "Generating ${weight} font..."
 
-	MORE_ARGS=''
-	if [ -n "$2" ]; then
-		MORE_ARGS="-V ${2}"
-	fi
-
 	cd "$weight"
 	fontforge -lang=ff -script "${MYDIR}/mkttf.ff"  -f 'Terminus (TTF)' \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
-		-A '-a -1' $MORE_ARGS \
+		-A '-a -1' ${2:+-V "${2}"} \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1).bdf"
 	cd - 1>/dev/null
 
