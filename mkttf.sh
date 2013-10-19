@@ -121,7 +121,9 @@ fi
 # -p to suppress errors.
 mkdir -p normal bold italic || error 4 'Could not create target directories.'
 
-## NOTE: The following code is Terminus-specific!
+##################################################
+# NOTE: The following code is Terminus-specific! #
+##################################################
 
 # Generate italic BDF files:
 echo 'Generating italic BDF files...'
