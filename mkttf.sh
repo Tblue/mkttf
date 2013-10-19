@@ -119,7 +119,7 @@ if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 fi
 
 # -p to suppress errors.
-mkdir -p normal bold italic || error 4 'Could not create target directories.'
+mkdir -p Normal Bold Italic || error 4 'Could not create target directories.'
 
 ##################################################
 # NOTE: The following code is Terminus-specific! #
@@ -133,15 +133,25 @@ for bdf in "$SRCDIR"/ter-u*n.bdf; do
 done
 
 # Generate the TTF fonts.
-for weight in normal bold italic; do
+for weight in Normal Bold Italic; do
 	echo "Generating ${weight} font..."
-
 	cd "$weight"
-	fontforge -lang=ff -script "${MYDIR}/mkttf.ff"  -f 'Terminus (TTF)' \
+
+	WEIGHT_NAME="${weight}"
+	if [ "${WEIGHT_NAME}" = Normal ]; then
+		# The normal/medium Terminus font should simply be named "TerminusTTF".
+		unset WEIGHT_NAME
+	fi
+
+	fontforge -lang=ff -script "${MYDIR}/mkttf.ff" \
+		-f 'Terminus (TTF)' -n "TerminusTTF${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
+		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
 		-A '-a -1' ${2:+-V "${2}"} \
-		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1).bdf"
+		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
 	cd - 1>/dev/null
 
 	echo
 done
+
+# vim:ts=4 sw=4 noet
