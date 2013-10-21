@@ -1,22 +1,35 @@
-The mkttf.sh script generates medium (normal), bold and italic versions
-of the Terminus font. It will create three directories ("normal", "bold"
-and "italic") in the current working directory.
+# `mkttf`: BDF to TTF conversion #
 
-To use mktff.sh, you need the following tools installed in your PATH:
-  - A POSIX-compliant shell.
-  - mkitalic (generates the italic font): http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html
-  - FontForge (BDF -> TTF conversion): http://fontforge.sf.net
-  - Potrace (outline generation): http://potrace.sf.net
+The `mkttf.ff` FontForge script converts a set of BDF files into
+a TTF file, automatically generating the needed scalable outlines.
+Call it with the `-h` option for usage help.
 
-The script takes one argument: The directory containing the Terminus BDF
+The `mkttf.sh` script generates medium (normal), bold and italic versions
+of the Terminus font. It will create three directories ("Normal", "Bold"
+and "Italic") in the current working directory.
+
+To use `mktff.ff`, you need the following tools installed in your PATH:
+    - [FontForge](http://fontforge.sf.net): This tool powers the entire
+        `mkttf.ff` script.
+    - [Potrace](http://potrace.sf.net): Used for generating the scalable
+        outlines.
+
+To use `mkttf.sh`, you additionally need the following programs in your path:
+    - Obviously, you need a POSIX-compliant shell.
+    - [mkitalic](http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html):
+        For generating the italic font.
+
+The `mkttf.sh` script takes one mandatory argument: The directory containing the Terminus BDF
 files. The italic versions of the BDF files will be placed there.
-An optional second argument specifies the font version.
+An optional second argument specifies the font version which will be included in the file names
+of the generated files and in the font files themselves (so it can be e. g. shown to the user).
 
 Additionally to generating TTF fonts, the script will also generate a SFD
-file (FontForge's native file format) for each font weight.
+file (FontForge's native file format) for each font weight so that the generated
+fonts can be easily modified, if necessary.
 
 If you want to generate TTF versions of other fonts, you should only need
-to modify mkttf.sh.
+to modify `mkttf.sh` -- the `mkttf.ff` script is completely generic.
 
 Have fun!
 
