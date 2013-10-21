@@ -1,7 +1,8 @@
 # `mkttf`: BDF to TTF conversion #
 
 The `mkttf.ff` FontForge script converts a set of BDF files into
-a TTF file, automatically generating the needed scalable outlines.
+a TTF file, automatically generating the required scalable outlines
+(actually, any font format supported by FontForge is accepted).
 Call it with the `-h` option for usage help.
 
 The `mkttf.sh` script generates medium (normal), bold and italic versions
