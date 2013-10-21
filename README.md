@@ -12,8 +12,7 @@ and "Italic") in the current working directory.
 To use `mktff.ff`, you need the following tools installed in your PATH:
   - [FontForge](http://fontforge.sf.net): This tool powers the entire
     `mkttf.ff` script.
-  - [Potrace](http://potrace.sf.net): Used to generate the scalable
-    outlines.
+  - [Potrace](http://potrace.sf.net): To generate the scalable outlines.
 
 To use `mkttf.sh`, you additionally need the following programs in your path:
   - Obviously, you need a POSIX-compliant shell.
@@ -25,7 +24,7 @@ files. The italic versions of the BDF files will be placed there.
 An optional second argument specifies the font version which will be included in the file names
 of the generated files and in the font files themselves (so it can be e. g. shown to the user).
 
-Additionally to generating TTF fonts, the script will also generate a SFD
+Additionally to generating TTF fonts, the script will also generate an SFD
 file (FontForge's native file format) for each font weight so that the generated
 fonts can be easily modified, if necessary.
 
