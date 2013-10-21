@@ -9,15 +9,15 @@ of the Terminus font. It will create three directories ("Normal", "Bold"
 and "Italic") in the current working directory.
 
 To use `mktff.ff`, you need the following tools installed in your PATH:
-    - [FontForge](http://fontforge.sf.net): This tool powers the entire
-        `mkttf.ff` script.
-    - [Potrace](http://potrace.sf.net): Used for generating the scalable
-        outlines.
+  - [FontForge](http://fontforge.sf.net): This tool powers the entire
+    `mkttf.ff` script.
+  - [Potrace](http://potrace.sf.net): Used for generating the scalable
+    outlines.
 
 To use `mkttf.sh`, you additionally need the following programs in your path:
-    - Obviously, you need a POSIX-compliant shell.
-    - [mkitalic](http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html):
-        For generating the italic font.
+  - Obviously, you need a POSIX-compliant shell.
+  - [mkitalic](http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html):
+    For generating the italic font.
 
 The `mkttf.sh` script takes one mandatory argument: The directory containing the Terminus BDF
 files. The italic versions of the BDF files will be placed there.
