@@ -1,7 +1,7 @@
 #!/bin/sh
 #       This script creates a zip archive out of TTF files created by mkttf.sh.
-#       Expects {Italic,Bold,Normal}/*.ttf to exist in the current directory.
-#       Creates the archive in the current directory.
+#       Expects {Italic,Bold,Normal}/*.ttf and a file named "COPYING" to exist
+#       in the current directory. Creates the archive in the current directory.
 #       
 #       The first parameter is an optional version string that will be included
 #       in the archive name (and used for the base directory inside the archive).
@@ -37,4 +37,4 @@
 #       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf${1:+-${1}}/|" \
-    -f "terminus-ttf${1:+-${1}}.zip" {Normal,Bold,Italic}/*.ttf
+    -f "terminus-ttf${1:+-${1}}.zip" {Normal,Bold,Italic}/*.ttf COPYING
