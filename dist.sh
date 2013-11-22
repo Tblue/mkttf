@@ -37,4 +37,4 @@
 #       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf${1:+-${1}}/|" \
-    -f "terminus-ttf${1:+-${1}}.zip" {Normal,Bold,Italic}/*.ttf COPYING
+    -f "terminus-ttf${1:+-${1}}.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
