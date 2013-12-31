@@ -143,11 +143,11 @@ for weight in Normal Bold Italic; do
 		unset WEIGHT_NAME
 	fi
 
-	fontforge -lang=ff -script "${MYDIR}/mkttf.ff" \
+	"${MYDIR}/mkttf.py" \
 		-f 'Terminus (TTF)' -n "TerminusTTF${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
-		-A '-a -1' ${2:+-V "${2}"} \
+		-A ' -a -1' ${2:+-V "${2}"} \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
 	cd - 1>/dev/null
 
