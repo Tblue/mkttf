@@ -115,35 +115,25 @@ def initArgumentParser():
 
     return argParser
 
-def setDefaultArgsFromFont(args, font):
-    """Set default values for certain arguments from a font.
-    
-    args is an argparse.Namespace.
-    font is a fontforge.font.
-
-    """
-    for argName in _argNameFontAttrMap:
-        if getattr(args, argName) is None:
-            # Need to get default from font.
-            setattr(
-                    args,
-                    argName,
-                    getattr(font, _argNameFontAttrMap[argName])
-                )
-
 def setFontAttrsFromArgs(font, args):
     """Set font attributes from arguments.
-    
+
+    If an argument is None, that means that no value was given. In that case, the font attribute
+    is not modified.
+
     args is an argparse.Namespace.
     font is a fontforge.font.
 
     """
     for argName in _argNameFontAttrMap:
-        setattr(
-                font,
-                _argNameFontAttrMap[argName],
-                getattr(args, argName)
-            )
+        argValue = getattr(args, argName)
+        if argValue is not None:
+            # User gave a new value for this font attribute.
+            setattr(
+                    font,
+                    _argNameFontAttrMap[argName],
+                    argValue
+                )
 
 
 # Parse the command line arguments.
@@ -158,9 +148,6 @@ try:
     baseFont = fontforge.open(args.bdf_file[0])
 except EnvironmentError as e:
     sys.exit("Could not open base font `%s'!" % args.bdf_file[0])
-
-# Make sure we take default values from the first BDF font.
-setDefaultArgsFromFont(args, baseFont)
 
 # Now import all the bitmaps from the other BDF files into this font.
 print 'Importing bitmaps from %d additional fonts...' % (len(args.bdf_file) - 1)
