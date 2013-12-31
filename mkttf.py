@@ -177,6 +177,34 @@ setFontAttrsFromArgs(baseFont, args)
 if args.append_copyright is not None:
     baseFont.copyright += args.append_copyright
 
+# Do we need to fixup the font for use with Visual Studio?
+# Taken from http://www.electronicdissonance.com/2010/01/raster-fonts-in-visual-studio-2010.html
+# Really, it's a MESS that one has to use dirty workarounds like this...
+if args.visual_studio_fixes:
+    print 'Applying Visual Studio fixes...'
+
+    # Make sure the encoding used for indexing is set to UCS.
+    baseFont.encoding = 'iso10646-1'
+
+    # Need to add CP950 (Traditional Chinese) to OS/2 table.
+    # According to http://www.microsoft.com/typography/otspec/os2.htm#cpr,
+    # we need to set bit 20 to enable CP950.
+    baseFont.os2_codepages = (baseFont.os2_codepages[0] | (1 << 20), baseFont.os2_codepages[1])
+
+    # FontForge won't write the OS/2 table unless we set a vendor (although this is not
+    # documented anywhere...). "PfEd" is the value FontForge writes when using the GUI.
+    baseFont.os2_vendor = 'PfEd'
+
+    # Font needs to include glyphs for certain characters.
+    # We substitute the default character (U+0000) for the missing glyphs.
+    baseFont.selection.select(0)
+    baseFont.copyReference()
+
+    for codePoint in [0x3044, 0x3046, 0x304B, 0x3057, 0x306E, 0x3093]:
+        if codePoint not in baseFont:
+            baseFont.selection.select(codePoint)
+            baseFont.paste()
+
 # Finally, save the files!
 basename = baseFont.fontname
 if baseFont.version != '':
