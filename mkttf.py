@@ -183,12 +183,12 @@ baseFont.autoTrace()
 baseFont.addExtrema()
 baseFont.simplify()
 
+# Now set font properties.
+setFontAttrsFromArgs(baseFont, args)
+
 # Do we want to append to the current copyright notice?
 if args.append_copyright is not None:
     baseFont.copyright += args.append_copyright
-
-# Now set font properties.
-setFontAttrsFromArgs(baseFont, args)
 
 # Finally, save the files!
 basename = baseFont.fontname
