@@ -31,7 +31,7 @@ file (FontForge's native file format) for each font weight so that the generated
 fonts can be easily modified, if necessary.
 
 If you want to generate TTF versions of other fonts, you should only need
-to modify `mkttf.sh` -- the `mkttf.ff` script is completely generic.
+to modify `mkttf.sh` -- the `mkttf.py` script is completely generic.
 
 Have fun!
 
