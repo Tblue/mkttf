@@ -186,14 +186,15 @@ if args.visual_studio_fixes:
     # Make sure the encoding used for indexing is set to UCS.
     baseFont.encoding = 'iso10646-1'
 
+    # FontForge won't write the OS/2 table unless we set a vendor and we set it BEFORE modifying
+    # the OS/2 table in any way (although this is not documented anywhere...).
+    # "PfEd" is the value FontForge writes when using the GUI.
+    baseFont.os2_vendor = 'PfEd'
+
     # Need to add CP950 (Traditional Chinese) to OS/2 table.
     # According to http://www.microsoft.com/typography/otspec/os2.htm#cpr,
     # we need to set bit 20 to enable CP950.
     baseFont.os2_codepages = (baseFont.os2_codepages[0] | (1 << 20), baseFont.os2_codepages[1])
-
-    # FontForge won't write the OS/2 table unless we set a vendor (although this is not
-    # documented anywhere...). "PfEd" is the value FontForge writes when using the GUI.
-    baseFont.os2_vendor = 'PfEd'
 
     # Font needs to include glyphs for certain characters.
     # We substitute the default character (U+0000) for the missing glyphs.
