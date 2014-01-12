@@ -135,6 +135,27 @@ def setFontAttrsFromArgs(font, args):
                     argValue
                 )
 
+def trySelectFontGlyph(font, selector, *alternativeSelectors):
+    """Try to select a glyph in font.
+
+    selector and all other, optional arguments specify unicode code
+    points (integers) or glyph names that should be selected in the
+    font. Note that only the _first_ glyph that exists in the font
+    is selected; the other selectors are only fallbacks.
+
+    If no glyph could be selected, None is returned; otherwise, the
+    selected fontforge.glyph object is returned.
+
+    """
+    for trySelector in (selector,) + alternativeSelectors:
+        if trySelector in font:
+            # We can select this glyph.
+            font.selection.select(trySelector)
+            return font[trySelector]
+
+    # Could not select anything.
+    return None
+
 
 # Parse the command line arguments.
 args = initArgumentParser().parse_args()
@@ -196,9 +217,17 @@ if args.visual_studio_fixes:
     # we need to set bit 20 to enable CP950.
     baseFont.os2_codepages = (baseFont.os2_codepages[0] | (1 << 20), baseFont.os2_codepages[1])
 
-    # Font needs to include glyphs for certain characters.
-    # We substitute the default character (U+0000) for the missing glyphs.
-    baseFont.selection.select(0)
+    # The font needs to include glyphs for certain characters.
+    # Try to find a fitting glyph to substitute for those glyphs which
+    # the font does not already contain. U+0000 is the "default character";
+    # it _should_ be displayed instead of missing characters, so it is a good choice.
+    # If the font does not contain a glyph for U+0000, try other, less optimal glyphs.
+    substGlyph = trySelectFontGlyph(baseFont, 0, 'question', 'space')
+    if substGlyph is None:
+        sys.exit('  Could not find a substitution glyph!')
+
+    print "  Chose `%s' as substitution glyph." % substGlyph.glyphname
+    baseFont.selection.select(substGlyph)
     baseFont.copyReference()
 
     for codePoint in [0x3044, 0x3046, 0x304B, 0x3057, 0x306E, 0x3093]:
