@@ -36,6 +36,8 @@ import argparse
 import fontforge
 import sys
 
+from itertools import dropwhile
+
 
 # Maps argument names to their font attribute names.
 _argNameFontAttrMap = {
@@ -135,27 +137,6 @@ def setFontAttrsFromArgs(font, args):
                     argValue
                 )
 
-def trySelectFontGlyph(font, selector, *alternativeSelectors):
-    """Try to select a glyph in font.
-
-    selector and all other, optional arguments specify unicode code
-    points (integers) or glyph names that should be selected in the
-    font. Note that only the _first_ glyph that exists in the font
-    is selected; the other selectors are only fallbacks.
-
-    If no glyph could be selected, None is returned; otherwise, the
-    selected fontforge.glyph object is returned.
-
-    """
-    for trySelector in (selector,) + alternativeSelectors:
-        if trySelector in font:
-            # We can select this glyph.
-            font.selection.select(trySelector)
-            return font[trySelector]
-
-    # Could not select anything.
-    return None
-
 
 # Parse the command line arguments.
 args = initArgumentParser().parse_args()
@@ -222,8 +203,10 @@ if args.visual_studio_fixes:
     # the font does not already contain. U+0000 is the "default character";
     # it _should_ be displayed instead of missing characters, so it is a good choice.
     # If the font does not contain a glyph for U+0000, try other, less optimal glyphs.
-    substGlyph = trySelectFontGlyph(baseFont, 0, 'question', 'space')
-    if substGlyph is None:
+    try:
+        selector = dropwhile(lambda x: x not in baseFont, [0, 'question', 'space']).next()
+        substGlyph = baseFont[selector]
+    except StopIteration:
         sys.exit('  Could not find a substitution glyph!')
 
     print "  Chose `%s' as substitution glyph." % substGlyph.glyphname
