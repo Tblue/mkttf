@@ -3,7 +3,7 @@
 # This Python script uses FontForge to convert a set of BDF files into a
 # TrueType font (TTF) and an SFD file.
 # 
-# Copyright (c) 2013 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+# Copyright (c) 2013-2014 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ if args.visual_studio_fixes:
         selector = dropwhile(lambda x: x not in baseFont, [0, 'question', 'space']).next()
         substGlyph = baseFont[selector]
     except StopIteration:
-        sys.exit('  Could not find a substitution glyph!')
+        sys.exit('  While applying Visual Studio fixes: Could not find a substitution glyph!')
 
     print "  Chose `%s' as substitution glyph." % substGlyph.glyphname
     baseFont.selection.select(substGlyph)
