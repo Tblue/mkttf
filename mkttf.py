@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 #
 # This Python script uses FontForge to convert a set of BDF files into a
 # TrueType font (TTF) and an SFD file.
@@ -31,6 +31,8 @@
 # THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+from __future__ import print_function
 
 import argparse
 import fontforge
@@ -152,7 +154,7 @@ except EnvironmentError as e:
     sys.exit("Could not open base font `%s'!" % args.bdf_file[0])
 
 # Now import all the bitmaps from the other BDF files into this font.
-print 'Importing bitmaps from %d additional fonts...' % (len(args.bdf_file) - 1)
+print('Importing bitmaps from %d additional fonts...' % (len(args.bdf_file) - 1))
 for fontFile in args.bdf_file[1:]:
     try:
         baseFont.importBitmaps(fontFile)
@@ -166,7 +168,7 @@ except EnvironmentError as e:
     sys.exit("Could not import font `%s' into glyph background!" % args.bdf_file[-1])
 
 # AutoTrace all glyphs, add extrema and simplify.
-print 'Processing glyphs...'
+print('Processing glyphs...')
 baseFont.selection.all()
 baseFont.autoTrace()
 baseFont.addExtrema()
@@ -183,7 +185,7 @@ if args.append_copyright is not None:
 # Taken from http://www.electronicdissonance.com/2010/01/raster-fonts-in-visual-studio-2010.html
 # Really, it's a MESS that one has to use dirty workarounds like this...
 if args.visual_studio_fixes:
-    print 'Applying Visual Studio fixes...'
+    print('Applying Visual Studio fixes...')
 
     # Make sure the encoding used for indexing is set to UCS.
     baseFont.encoding = 'iso10646-1'
@@ -204,12 +206,12 @@ if args.visual_studio_fixes:
     # it _should_ be displayed instead of missing characters, so it is a good choice.
     # If the font does not contain a glyph for U+0000, try other, less optimal glyphs.
     try:
-        selector = dropwhile(lambda x: x not in baseFont, [0, 'question', 'space']).next()
+        selector = next(dropwhile(lambda x: x not in baseFont, [0, 'question', 'space']))
         substGlyph = baseFont[selector]
     except StopIteration:
         sys.exit('  While applying Visual Studio fixes: Could not find a substitution glyph!')
 
-    print "  Chose `%s' as substitution glyph." % substGlyph.glyphname
+    print("  Chose `%s' as substitution glyph." % substGlyph.glyphname)
     baseFont.selection.select(substGlyph)
     baseFont.copyReference()
 
@@ -223,10 +225,10 @@ basename = baseFont.fontname
 if baseFont.version != '':
     basename += '-' + baseFont.version
 
-print 'Saving TTF file...'
+print('Saving TTF file...')
 baseFont.generate(basename + '.ttf', 'ttf')
 
-print 'Saving SFD file...'
+print('Saving SFD file...')
 baseFont.save(basename + '.sfd')
 
-print 'Done!'
+print('Done!')
