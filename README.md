@@ -10,11 +10,14 @@ of the Terminus font. It will create three directories ("Normal", "Bold"
 and "Italic") in the current working directory.
 
 To use `mktff.py`, you need the following tools installed in your PATH:
-  - A recent version of [Python](http://python.org) 2.
   - [FontForge](http://fontforge.sf.net): This tool and its Python extension
     enable me to modify the font using Python. You need a version that has
     Python support enabled (i. e. provides a Python extension).
   - [Potrace](http://potrace.sf.net): To generate the scalable outlines.
+  - A recent version of [Python](http://python.org). Whether you have to choose
+    Python 2 or Python 3 depends on how your version of FontForge was built:
+    FontForge can either be built with support for Python 2 or with support for
+    Python 3. `mkttf.py` supports both versions.
 
 To use `mkttf.sh`, you additionally need the following programs in your path:
   - Obviously, you need a POSIX-compliant shell.
