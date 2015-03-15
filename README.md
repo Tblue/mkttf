@@ -24,10 +24,14 @@ To use `mkttf.sh`, you additionally need the following programs in your path:
   - [mkitalic](http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html):
     To generate the italic font.
 
-The `mkttf.sh` script takes one mandatory argument: The directory containing the Terminus BDF
-files. The italic versions of the BDF files will be placed there.
-An optional second argument specifies the font version which will be included in the file names
-of the generated files and in the font files themselves (so it can be e. g. shown to the user).
+The `mkttf.sh` script takes two mandatory arguments:
+
+1. The directory containing the Terminus BDF files. The italic versions of the BDF
+   files will be placed there.
+2. The font version which will be included in the file names of the generated files
+   and in the font files themselves (so it can be e. g. shown to the user).
+
+All other arguments are passed directly to `mkttf.py`.
 
 Additionally to generating TTF fonts, the script will also generate an SFD
 file (FontForge's native file format) for each font weight so that the generated
