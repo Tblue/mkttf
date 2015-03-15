@@ -94,9 +94,11 @@ MYDIR="$(mkabs "$(dirname "$0")")"
 
 ### Start of main script ###
 
-if [ $# -lt 1 ]; then
+if [ "$1" = "-h" -o $# -lt 2 ]; then
+	exec >&2
 	echo 'Usage:'
-	echo " ${0} srcdir [fontver]"
+	echo " ${0} srcdir fontver [additional mkttf.py options]"
+
 	exit 1
 fi
 
@@ -148,6 +150,7 @@ for weight in Normal Bold Italic; do
 		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
 		-A ' -a -1' -V "${FONTVER}" \
+		"$@" \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
 	cd - 1>/dev/null
 
