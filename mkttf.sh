@@ -2,7 +2,7 @@
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from its BDF files.
 #
-#       Copyright (c) 2009-2013 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2009-2015 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@ error()
 	ret="$1"
 	shift
 
-	echo "Error: $*"
+	echo "Error: $*" >&2
 	exit $ret
 }
 
@@ -77,20 +77,17 @@ mkabs()
 # Echoes : Nothing.
 # Returns: 0 on success, 1 on failure.
 in_path()
-{
-    __OLD_IFS="$IFS"
+(
     IFS=:
-
-    for __dir in $PATH; do
-        if [ -x "${__dir:-.}/${1}" ]; then
-            IFS="$__OLD_IFS"
+    for dir in $PATH; do
+        check_path="${dir:-.}/${1}"
+        if [ -f "${check_path}" -a -x "${check_path}" ]; then
             return 0
         fi
     done
 
-    IFS="$__OLD_IFS"
     return 1
-}
+)
 
 # The absolute path to this file's directory.
 MYDIR="$(mkabs "$(dirname "$0")")"
@@ -112,6 +109,9 @@ fi
 
 # The path to the directory where the BDF files reside.
 SRCDIR="$(mkabs "$1")"
+# Font version to use for file names etc.
+FONTVER=$2
+shift 2
 
 if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 	error 3 'The given directory does not look like a valid source directory:' \
@@ -147,7 +147,7 @@ for weight in Normal Bold Italic; do
 		-f 'Terminus (TTF)' -n "TerminusTTF${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
-		-A ' -a -1' ${2:+-V "${2}"} -s \
+		-A ' -a -1' -V "${FONTVER}" \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
 	cd - 1>/dev/null
 
