@@ -1,13 +1,13 @@
 #!/bin/sh
-#       This script creates a zip archive out of TTF files created by mkttf.sh.
-#       Expects {Italic,Bold,Normal}/*.ttf and a file named "COPYING" to exist
-#       in the current directory. Creates the archive in the current directory.
-#       
-#       The first parameter is an optional version string that will be included
-#       in the archive name (and used for the base directory inside the archive).
+#       This script creates and zips Terminus TTF files for distribution.
+#       Creates the archive and all other font files in the current directory.
+#
+#       The first parameter is the path to the Terminus bitmap font source directory.
+#       The second parameter is a version string that will be included in the archive
+#       name (and used for the base directory inside the archive).
 #
 #
-#       Copyright (c) 2013 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2013-2015 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -36,5 +36,25 @@
 #       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf${1:+-${1}}/|" \
-    -f "terminus-ttf${1:+-${1}}.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
+set -e
+
+MYDIR=$(dirname "$(readlink -e "${0}")")
+
+if [ $# -lt 2 ]; then
+    exec >&2
+    echo "Usage:"
+    echo " ${0} fontsrcdir fontversion"
+
+    exit 1
+fi
+
+FONTSRCDIR=$1
+FONTVER=$2
+
+# 1. Run mkttf.py twice -- once without Windows-specific fixes and once with them.
+"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
+"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}-windows" -s
+
+# 2. Zip the files.
+bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
+    -f "terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
