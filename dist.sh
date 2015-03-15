@@ -57,4 +57,6 @@ FONTVER=$2
 
 # 2. Zip the files.
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
-    -f "terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
+    -f "terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*-"${FONTVER}.ttf" ./COPYING
+bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
+    -f "terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*-windows.ttf ./COPYING
