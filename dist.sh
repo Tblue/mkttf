@@ -7,7 +7,7 @@
 #       name (and used for the base directory inside the archive).
 #
 #
-#       Copyright (c) 2013-2015 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2013-2016 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -51,12 +51,14 @@ fi
 FONTSRCDIR=$1
 FONTVER=$2
 
-# 1. Run mkttf.py twice -- once without Windows-specific fixes and once with them.
+# 1. Generate fonts WITHOUT Windows-specific fixes and zip them.
+rm -rf Normal Bold Italic "terminus-ttf-${FONTVER}.zip"
 "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
-"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}-windows" -s
-
-# 2. Zip the files.
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
     -f "terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*-"${FONTVER}.ttf" ./COPYING
+
+# 2. Generate fonts WIT Windows-specific fixes and zip them.
+rm -rf Normal Bold Italic "terminus-ttf-${FONTVER}-windows.zip"
+"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" -s
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
-    -f "terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*-windows.ttf ./COPYING
+    -f "terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
