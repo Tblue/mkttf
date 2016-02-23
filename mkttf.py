@@ -3,7 +3,7 @@
 # This Python script uses FontForge to convert a set of BDF files into a
 # TrueType font (TTF) and an SFD file.
 # 
-# Copyright (c) 2013-2014 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+# Copyright (c) 2013-2016 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without

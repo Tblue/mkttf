@@ -152,8 +152,12 @@ for weight in Normal Bold Italic; do
 		-A ' -a -1' -V "${FONTVER}" \
 		"$@" \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
-	cd - 1>/dev/null
 
+	if [ $? -gt 0 ]; then
+		error 5 "Could not run mkttf.py!"
+	fi
+
+	cd - 1>/dev/null
 	echo
 done
 
