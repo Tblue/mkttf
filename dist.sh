@@ -68,8 +68,10 @@ if [ -z "$ZIP_ONLY" ]; then
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
 fi
 
-bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
-    -f "../terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*.ttf "${MYDIR}/COPYING"
+bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}.zip" \
+    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${FONTVER}/COPYING|" \
+    -s "|^.*/|terminus-ttf-${FONTVER}/|" \
+    {Normal,Bold,Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
 
 
 # 2. Generate fonts WITH Windows-specific fixes and zip them.
@@ -81,5 +83,7 @@ if [ -z "$ZIP_ONLY" ]; then
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" -s
 fi
 
-bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
-    -f "../terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*.ttf "${MYDIR}/COPYING"
+bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}-windows.zip" \
+    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${FONTVER}-windows/COPYING|" \
+    -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
+    {Normal,Bold,Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
