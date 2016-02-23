@@ -40,25 +40,46 @@ set -e
 
 MYDIR=$(dirname "$(readlink -e "${0}")")
 
+
 if [ $# -lt 2 ]; then
     exec >&2
     echo "Usage:"
-    echo " ${0} fontsrcdir fontversion"
+    echo " ${0} [-z] fontsrcdir fontversion"
 
     exit 1
 fi
 
-FONTSRCDIR=$1
+if [ "$1" = "-z" ]; then
+    # Only zip already present font files, do not generate fonts.
+    ZIP_ONLY=1
+    shift
+fi
+
+FONTSRCDIR=$(readlink -e "$1")
 FONTVER=$2
 
-# 1. Generate fonts WITHOUT Windows-specific fixes and zip them.
-rm -rf Normal Bold Italic "terminus-ttf-${FONTVER}.zip"
-"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
-bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
-    -f "terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*-"${FONTVER}.ttf" ./COPYING
 
-# 2. Generate fonts WIT Windows-specific fixes and zip them.
-rm -rf Normal Bold Italic "terminus-ttf-${FONTVER}-windows.zip"
-"${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" -s
+# 1. Generate fonts WITHOUT Windows-specific fixes and zip them.
+mkdir -p other_systems
+cd other_systems
+
+if [ -z "$ZIP_ONLY" ]; then
+    rm -rf Normal Bold Italic
+    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
+fi
+
+bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}/|" \
+    -f "../terminus-ttf-${FONTVER}.zip" {Normal,Bold,Italic}/*.ttf "${MYDIR}/COPYING"
+
+
+# 2. Generate fonts WITH Windows-specific fixes and zip them.
+mkdir -p ../windows
+cd ../windows
+
+if [ -z "$ZIP_ONLY" ]; then
+    rm -rf Normal Bold Italic
+    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" -s
+fi
+
 bsdtar -c --format zip --gid 0 --uid 0 -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
-    -f "terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*.ttf ./COPYING
+    -f "../terminus-ttf-${FONTVER}-windows.zip" {Normal,Bold,Italic}/*.ttf "${MYDIR}/COPYING"
