@@ -209,13 +209,6 @@ try:
 except EnvironmentError as e:
     sys.exit("Could not import font `%s' into glyph background!" % args.bdf_file[-1])
 
-# AutoTrace all glyphs, add extrema and simplify.
-print('Processing glyphs...')
-baseFont.selection.all()
-baseFont.autoTrace()
-baseFont.addExtrema()
-baseFont.simplify()
-
 # Now set font properties.
 setFontAttrsFromArgs(baseFont, args)
 
@@ -254,6 +247,13 @@ if args.os2_table_tweaks:
 
     baseFont.os2_stylemap |= styleMap
     baseFont.macstyle |= macStyle
+
+# AutoTrace all glyphs, add extrema and simplify.
+print('Processing glyphs...')
+baseFont.selection.all()
+baseFont.autoTrace()
+baseFont.addExtrema()
+baseFont.simplify()
 
 # Do we need to fixup the font for use with Visual Studio?
 # Taken from http://www.electronicdissonance.com/2010/01/raster-fonts-in-visual-studio-2010.html
