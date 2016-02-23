@@ -37,19 +37,18 @@ from __future__ import print_function
 import argparse
 import fontforge
 import sys
-
 from itertools import dropwhile
 
 
 # Maps argument names to their font attribute names.
 _argNameFontAttrMap = {
-        'name':         'fontname',
-        'family':       'familyname',
-        'display_name': 'fullname',
-        'weight':       'weight',
-        'copyright':    'copyright',
-        'font_version': 'version',
-    }
+    'name': 'fontname',
+    'family': 'familyname',
+    'display_name': 'fullname',
+    'weight': 'weight',
+    'copyright': 'copyright',
+    'font_version': 'version',
+}
 
 # Determines which fsSelection and macStyle bits in the OS/2 table get set
 # when a certain font weight is specified and OS/2 table tweaks are enabled.
@@ -67,88 +66,100 @@ _argNameFontAttrMap = {
 #
 # See https://www.microsoft.com/typography/otspec/os2.htm#fss for details.
 _weightToStyleMap = {
-        'normal': (0x40, 0),        # fsSelection: Set bit 6 ("REGULAR").
-        'medium': (0x40, 0),        # fsSelection: Set bit 6 ("REGULAR").
-        'italic': (0x201, 0x2),     # fsSelection: Set bits 0 ("ITALIC") and 9 ("OBLIQUE").
-                                    # macStyle: Set bit 1 (which presumably also means "ITALIC").
-        'bold': (0x20, 0x1)         # fsSelection: Set bit 5 ("BOLD")
-                                    # macStyle: Set bit 0 (which presumably also means "BOLD").
-    }
+    # fsSelection: Set bit 6 ("REGULAR").
+    'normal': (0x40, 0),
+
+    # fsSelection: Set bit 6 ("REGULAR").
+    'medium': (0x40, 0),
+
+    # fsSelection: Set bits 0 ("ITALIC") and 9 ("OBLIQUE").
+    # macStyle: Set bit 1 (which presumably also means "ITALIC").
+    'italic': (0x201, 0x2),
+
+    # fsSelection: Set bit 5 ("BOLD").
+    # macStyle: Set bit 0 (which presumably also means "BOLD").
+    'bold': (0x20, 0x1)
+}
 
 
 def initArgumentParser():
     """Initialize and return an argparse.ArgumentParser that parses this program's arguments."""
     argParser = argparse.ArgumentParser(
-            description='Convert a set of BDF files into a TrueType font (TTF). ' +
-                'The BDF files have to be sorted by font size in ascending order.'
-        )
+            description='Convert a set of BDF files into a TrueType font (TTF). '
+                        'The BDF files have to be sorted by font size in ascending order.'
+    )
 
     # Positional arguments.
-    argParser.add_argument('bdf_file', nargs='+', help='BDF file to process.')
+    argParser.add_argument(
+            'bdf_file',
+            nargs='+',
+            help='BDF file to process.'
+    )
 
     # Optional arguments.
     argParser.add_argument(
             '-n',
             '--name',
             help='Font name to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-f',
             '--family',
             help='Font family to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-N',
             '--display-name',
             help='Full font name (for display) to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-w',
             '--weight',
             help='Weight to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-c',
             '--copyright',
             help='Copyright notice to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-C',
             '--append-copyright',
             help='Copyright notice to use for generated font (appends to notice taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-V',
             '--font-version',
             help='Font version to use for generated font (default: taken from first BDF file).'
-        )
+    )
     argParser.add_argument(
             '-a',
             '--prefer-autotrace',
             action='store_true',
             help='Prefer AutoTrace over Potrace, if possible (default: %(default)s).'
-        )
+    )
     argParser.add_argument(
             '-A',
             '--tracer-args',
             default='',
             help='Additional arguments for AutoTrace/Potrace (default: none).'
-        )
+    )
     argParser.add_argument(
             '-s',
             '--visual-studio-fixes',
             action='store_true',
             help='Make generated font compatible with Visual Studio (default: %(default)s).'
-        )
+    )
     argParser.add_argument(
             '-O',
             '--os2-table-tweaks',
             action='store_true',
             help='Tweak OS/2 table according to the font weight. This may be needed for some '
                  'buggy FontForge versions which do not do this by themselves.'
-        )
+    )
 
     return argParser
+
 
 def setFontAttrsFromArgs(font, args):
     """Set font attributes from arguments.
@@ -168,7 +179,7 @@ def setFontAttrsFromArgs(font, args):
                     font,
                     _argNameFontAttrMap[argName],
                     argValue
-                )
+            )
 
 
 # Parse the command line arguments.
@@ -233,12 +244,13 @@ if args.os2_table_tweaks:
     except KeyError:
         sys.exit("Cannot tweak OS/2 table: No tweaks defined for guessed font weight `%s'!" % os2_weight)
 
-    print("OS/2 table tweaks: Guessed weight is `%s' -> Adding %#x to StyleMap and %#x to macStyle." % (
+    print(
+            "OS/2 table tweaks: Guessed weight is `%s' -> Adding %#x to StyleMap and %#x to macStyle." % (
                 os2_weight,
                 styleMap,
                 macStyle
-            )
         )
+    )
 
     baseFont.os2_stylemap |= styleMap
     baseFont.macstyle |= macStyle
