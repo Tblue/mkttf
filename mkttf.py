@@ -51,6 +51,30 @@ _argNameFontAttrMap = {
         'font_version': 'version',
     }
 
+# Determines which fsSelection and macStyle bits in the OS/2 table get set
+# when a certain font weight is specified and OS/2 table tweaks are enabled.
+#
+# Use lowercase font weights here. The "italic" font weight is special:
+# If the font weight is "medium" and the font name ends with "italic"
+# (case-insensitive), then "italic" is used when looking up values in this
+# dictionary instead of "medium".
+#
+# The first value of each tuple contains the bits to set in the fsSelection
+# field.
+#
+# The second value of each tuple contains the bits to set in the macStyle
+# field in the OS/2 table.
+#
+# See https://www.microsoft.com/typography/otspec/os2.htm#fss for details.
+_weightToStyleMap = {
+        'normal': (0x40, 0),        # fsSelection: Set bit 6 ("REGULAR").
+        'medium': (0x40, 0),        # fsSelection: Set bit 6 ("REGULAR").
+        'italic': (0x201, 0x2),     # fsSelection: Set bits 0 ("ITALIC") and 9 ("OBLIQUE").
+                                    # macStyle: Set bit 1 (which presumably also means "ITALIC").
+        'bold': (0x20, 0x1)         # fsSelection: Set bit 5 ("BOLD")
+                                    # macStyle: Set bit 0 (which presumably also means "BOLD").
+    }
+
 
 def initArgumentParser():
     """Initialize and return an argparse.ArgumentParser that parses this program's arguments."""
@@ -115,6 +139,13 @@ def initArgumentParser():
             '--visual-studio-fixes',
             action='store_true',
             help='Make generated font compatible with Visual Studio (default: %(default)s).'
+        )
+    argParser.add_argument(
+            '-O',
+            '--os2-table-tweaks',
+            action='store_true',
+            help='Tweak OS/2 table according to the font weight. This may be needed for some '
+                 'buggy FontForge versions which do not do this by themselves.'
         )
 
     return argParser
@@ -181,6 +212,37 @@ setFontAttrsFromArgs(baseFont, args)
 if args.append_copyright is not None:
     baseFont.copyright += args.append_copyright
 
+# FontForge won't write the OS/2 table unless we set a vendor and we set it BEFORE modifying
+# the OS/2 table in any way (although this is not documented anywhere...).
+# "PfEd" is the value FontForge writes when using the GUI.
+baseFont.os2_vendor = 'PfEd'
+
+# Newer FontForge releases require us to manually set the macStyle
+# and fsSelection (aka "StyleMap") fields in the OS/2 table.
+if args.os2_table_tweaks:
+    if not hasattr(baseFont, "os2_stylemap"):
+        sys.exit("You requested OS/2 table tweaks, but your FontForge version is too old for these "
+                 "tweaks to work.")
+
+    os2_weight = baseFont.weight.lower()
+    if os2_weight == "medium" and baseFont.fontname.lower().endswith("italic"):
+        os2_weight = "italic"
+
+    try:
+        styleMap, macStyle = _weightToStyleMap[os2_weight]
+    except KeyError:
+        sys.exit("Cannot tweak OS/2 table: No tweaks defined for guessed font weight `%s'!" % os2_weight)
+
+    print("OS/2 table tweaks: Guessed weight is `%s' -> Adding %#x to StyleMap and %#x to macStyle." % (
+                os2_weight,
+                styleMap,
+                macStyle
+            )
+        )
+
+    baseFont.os2_stylemap |= styleMap
+    baseFont.macstyle |= macStyle
+
 # Do we need to fixup the font for use with Visual Studio?
 # Taken from http://www.electronicdissonance.com/2010/01/raster-fonts-in-visual-studio-2010.html
 # Really, it's a MESS that one has to use dirty workarounds like this...
@@ -189,11 +251,6 @@ if args.visual_studio_fixes:
 
     # Make sure the encoding used for indexing is set to UCS.
     baseFont.encoding = 'iso10646-1'
-
-    # FontForge won't write the OS/2 table unless we set a vendor and we set it BEFORE modifying
-    # the OS/2 table in any way (although this is not documented anywhere...).
-    # "PfEd" is the value FontForge writes when using the GUI.
-    baseFont.os2_vendor = 'PfEd'
 
     # Need to add CP950 (Traditional Chinese) to OS/2 table.
     # According to http://www.microsoft.com/typography/otspec/os2.htm#cpr,

@@ -149,7 +149,7 @@ for weight in Normal Bold Italic; do
 		-f 'Terminus (TTF)' -n "TerminusTTF${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
-		-A ' -a -1' -V "${FONTVER}" \
+		-A ' -a -1' -V "${FONTVER}" -O \
 		"$@" \
 		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
 
