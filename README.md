@@ -41,5 +41,3 @@ If you want to generate TTF versions of other fonts, you should only need
 to modify `mkttf.sh` -- the `mkttf.py` script is completely generic.
 
 Have fun!
-
-- Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
