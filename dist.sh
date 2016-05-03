@@ -65,7 +65,7 @@ cd other_systems
 
 if [ -z "$ZIP_ONLY" ]; then
     rm -rf Normal Bold Italic
-    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}"
+    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTF" "Terminus (TTF)"
 fi
 
 bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}.zip" \
@@ -80,7 +80,7 @@ cd ../windows
 
 if [ -z "$ZIP_ONLY" ]; then
     rm -rf Normal Bold Italic
-    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" -s
+    "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTFWindows" "Terminus (TTF) for Windows" -s
 fi
 
 bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}-windows.zip" \

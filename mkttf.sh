@@ -94,10 +94,10 @@ MYDIR="$(mkabs "$(dirname "$0")")"
 
 ### Start of main script ###
 
-if [ "$1" = "-h" -o $# -lt 2 ]; then
+if [ "$1" = "-h" -o $# -lt 4 ]; then
 	exec >&2
 	echo 'Usage:'
-	echo " ${0} srcdir fontver [additional mkttf.py options]"
+	echo " ${0} srcdir fontver fontname nicefontname [additional mkttf.py options]"
 
 	exit 1
 fi
@@ -113,7 +113,11 @@ fi
 SRCDIR="$(mkabs "$1")"
 # Font version to use for file names etc.
 FONTVER=$2
-shift 2
+# PostScript font name; also used in file names.
+FONTNAME=$3
+# Human-readable font name.
+NICEFONTNAME=$4
+shift 4
 
 if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 	error 3 'The given directory does not look like a valid source directory:' \
@@ -146,8 +150,8 @@ for weight in Normal Bold Italic; do
 	fi
 
 	"${MYDIR}/mkttf.py" \
-		-f 'Terminus (TTF)' -n "TerminusTTF${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
-		-N "Terminus (TTF)${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
+		-f "${NICEFONTNAME}" -n "${FONTNAME}${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
+		-N "${NICEFONTNAME}${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
 		-A ' -a -1' -V "${FONTVER}" -O \
 		"$@" \
