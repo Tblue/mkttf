@@ -78,7 +78,11 @@ _weightToStyleMap = {
 
     # fsSelection: Set bit 5 ("BOLD").
     # macStyle: Set bit 0 (which presumably also means "BOLD").
-    'bold': (0x20, 0x1)
+    'bold': (0x20, 0x1),
+
+    # fsSelection: Set bits 0 ("ITALIC"), 9 ("OBLIQUE") and 5 ("BOLD").
+    # macStyle: Set bits 1 (italic) and 0 (bold).
+    'bolditalic': (0x221, 0x3),
 }
 
 
@@ -231,6 +235,8 @@ if args.os2_table_tweaks:
     os2_weight = baseFont.weight.lower()
     if os2_weight == "medium" and baseFont.fontname.lower().endswith("italic"):
         os2_weight = "italic"
+    elif os2_weight == "bold" and baseFont.fontname.lower().endswith("italic"):
+        os2_weight = "bolditalic"
 
     try:
         styleMap, macStyle = _weightToStyleMap[os2_weight]

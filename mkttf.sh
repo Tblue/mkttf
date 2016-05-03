@@ -125,7 +125,7 @@ if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 fi
 
 # -p to suppress errors.
-mkdir -p Normal Bold Italic || error 4 'Could not create target directories.'
+mkdir -p Normal Bold Italic 'Bold Italic' || error 4 'Could not create target directories.'
 
 ##################################################
 # NOTE: The following code is Terminus-specific! #
@@ -136,10 +136,11 @@ echo 'Generating italic BDF files...'
 for bdf in "$SRCDIR"/ter-u*n.bdf; do
 	BDF_BASENAME="$(basename "$bdf" n.bdf)"
 	mkitalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}i.bdf"
+	mkbolditalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}BI.bdf"
 done
 
 # Generate the TTF fonts.
-for weight in Normal Bold Italic; do
+for weight in Normal Bold Italic 'Bold Italic'; do
 	echo "Generating ${weight} font..."
 	cd "$weight"
 
@@ -149,13 +150,19 @@ for weight in Normal Bold Italic; do
 		unset WEIGHT_NAME
 	fi
 
+	if [ "${weight}" = 'Bold Italic' ]; then
+		FILE_SUFFIX=BI
+	else
+		FILE_SUFFIX=$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]')
+	fi
+
 	"${MYDIR}/mkttf.py" \
 		-f "${NICEFONTNAME}" -n "${FONTNAME}${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "${NICEFONTNAME}${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
 		-A ' -a -1' -V "${FONTVER}" -O \
 		"$@" \
-		"$SRCDIR"/ter-u*"$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]').bdf"
+		"$SRCDIR"/ter-u*"${FILE_SUFFIX}.bdf"
 
 	if [ $? -gt 0 ]; then
 		error 5 "Could not run mkttf.py!"
