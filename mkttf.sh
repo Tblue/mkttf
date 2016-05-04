@@ -136,7 +136,7 @@ echo 'Generating italic BDF files...'
 for bdf in "$SRCDIR"/ter-u*n.bdf; do
 	BDF_BASENAME="$(basename "$bdf" n.bdf)"
 	mkitalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}i.bdf"
-	mkbolditalic < "$bdf" > "${SRCDIR}/${BDF_BASENAME}BI.bdf"
+	mkitalic < "${bdf%n.bdf}b.bdf" > "${SRCDIR}/${BDF_BASENAME}BI.bdf"
 done
 
 # Generate the TTF fonts.
