@@ -44,7 +44,7 @@ MYDIR=$(dirname "$(readlink -e "${0}")")
 if [ $# -lt 2 ]; then
     exec >&2
     echo "Usage:"
-    echo " ${0} [-z] fontsrcdir fontversion"
+    echo " ${0} [-z] fontsrcdir fontversion [filename-variant-string]"
 
     exit 1
 fi
@@ -57,6 +57,7 @@ fi
 
 FONTSRCDIR=$(readlink -e "$1")
 FONTVER=$2
+VARIANT=${3:+$3-}
 
 
 # 1. Generate fonts WITHOUT Windows-specific fixes and zip them.
@@ -68,9 +69,9 @@ if [ -z "$ZIP_ONLY" ]; then
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTF" "Terminus (TTF)"
 fi
 
-bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}.zip" \
-    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${FONTVER}/COPYING|" \
-    -s "|^.*/|terminus-ttf-${FONTVER}/|" \
+bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${VARIANT}${FONTVER}.zip" \
+    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${VARIANT}${FONTVER}/COPYING|" \
+    -s "|^.*/|terminus-ttf-${VARIANT}${FONTVER}/|" \
     {Normal,Bold,Italic,Bold\ Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
 
 
@@ -83,7 +84,7 @@ if [ -z "$ZIP_ONLY" ]; then
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTFWindows" "Terminus (TTF) for Windows" -s
 fi
 
-bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${FONTVER}-windows.zip" \
-    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${FONTVER}-windows/COPYING|" \
-    -s "|^.*/|terminus-ttf-${FONTVER}-windows/|" \
+bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${VARIANT}${FONTVER}-windows.zip" \
+    -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${VARIANT}${FONTVER}-windows/COPYING|" \
+    -s "|^.*/|terminus-ttf-${VARIANT}${FONTVER}-windows/|" \
     {Normal,Bold,Italic,Bold\ Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
