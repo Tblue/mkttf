@@ -54,7 +54,7 @@ fonts. To enable this feature, pass the `--visual-studio-fixes` (or just `-s`)
 option to your invocations of `mkttf.sh` or `mkttf.py`.
 
 **Caveat:** `mkttf` will not add _real_ Hiragana glyphs to the font! Instead,
-it will try to add _some_ glyph for every required Hiragana character that is
+it will try to add a _fake_ glyph for every required Hiragana character that is
 missing from the font to fool Windows into thinking that the font is an Asian
 font for which bitmaps should be used.
 
@@ -81,4 +81,4 @@ the "fake" glyphs will be used instead of real Hiragana glyphs
 from another suitable font -- i. e. falling back to another font will not work,
 and those characters will not be displayed correctly. This of course is an issue
 if you actually need those Hiragana characters to display correctly, so you cannot
-use this "hack" in that case.
+use this `mkttf` feature in that case.
