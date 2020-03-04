@@ -6,3 +6,4 @@ WORKDIR /opt/mkttf
 COPY . /opt/mkttf
 
 ENTRYPOINT ["./mktty.py"]
+CMD ["-h"]
