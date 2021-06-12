@@ -1,7 +1,7 @@
 Copyright (c) 2010 Dimitar Toshkov Zhekov,
 with Reserved Font Name "Terminus Font".
 
-Copyright (c) 2011 Tilman Blumenbach,
+Copyright (c) 2011-2021 Tilman Blumenbach,
 with Reserved Font Name "Terminus (TTF)".
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
