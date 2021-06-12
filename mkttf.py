@@ -161,6 +161,13 @@ def initArgumentParser():
             help='Tweak OS/2 table according to the font weight. This may be needed for some '
                  'buggy FontForge versions which do not do this by themselves.'
     )
+    argParser.add_argument(
+            '--no-background',
+            action='store_true',
+            help='Do not import the largest font into the glyph background. This is useful only '
+                 'when the font already has a suitable glyph background, and you do not want to '
+                 'overwrite it. Only for special use cases.'
+    )
 
     return argParser
 
@@ -208,10 +215,14 @@ for fontFile in args.bdf_file[1:]:
         sys.exit("Could not import additional font `%s'!" % fontFile)
 
 # Import the last (biggest) BDF font into the glyph background.
-try:
-    baseFont.importBitmaps(args.bdf_file[-1], True)
-except EnvironmentError as e:
-    sys.exit("Could not import font `%s' into glyph background!" % args.bdf_file[-1])
+if not args.no_background:
+    try:
+        print("Importing font `%s' into glyph background..." % args.bdf_file[-1])
+        baseFont.importBitmaps(args.bdf_file[-1], True)
+    except EnvironmentError as e:
+        sys.exit("Could not import font `%s' into glyph background: %s" % (args.bdf_file[-1], e))
+else:
+    print("Skipping import of font `%s' into glyph background, as requested." % args.bdf_file[-1])
 
 # Now set font properties.
 setFontAttrsFromArgs(baseFont, args)
