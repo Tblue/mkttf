@@ -233,8 +233,10 @@ if args.append_copyright is not None:
 
 # FontForge won't write the OS/2 table unless we set a vendor and we set it BEFORE modifying
 # the OS/2 table in any way (although this is not documented anywhere...).
-# "PfEd" is the value FontForge writes when using the GUI.
-baseFont.os2_vendor = 'PfEd'
+# "PfEd" is the generic value FontForge writes when using the GUI.  Here we use "TiBl" to
+# denote the font foundry. FontForge requires this entry to be at most 4 characters. Change
+# the value to suite your needs.
+baseFont.os2_vendor = 'TiBl'
 
 # Newer FontForge releases require us to manually set the macStyle
 # and fsSelection (aka "StyleMap") fields in the OS/2 table.
