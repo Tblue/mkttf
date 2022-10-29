@@ -125,7 +125,7 @@ if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 fi
 
 # -p to suppress errors.
-mkdir -p Normal Bold Italic 'Bold Italic' || error 4 'Could not create target directories.'
+mkdir -p Normal Bold Italic Bold-Italic || error 4 'Could not create target directories.'
 
 ##################################################
 # NOTE: The following code is Terminus-specific! #
