@@ -37,6 +37,7 @@ from __future__ import print_function
 import argparse
 import fontforge
 import os.path
+import re
 import sys
 from itertools import dropwhile
 
@@ -85,6 +86,17 @@ _weightToStyleMap = {
     # macStyle: Set bits 1 (italic) and 0 (bold).
     'bolditalic': (0x221, 0x3),
 }
+
+
+def arg_vendor_id(arg):
+    if len(arg) != 4 or not re.fullmatch(r'[\x21-\x7E]{,4} *', arg):
+        raise argparse.ArgumentTypeError(
+            'Vendor ID must be a four-character string of up to four printable ASCII characters other than space, with '
+            'trailing spaces for padding.'
+        )
+
+    # All good!
+    return arg
 
 
 def initArgumentParser():
@@ -136,6 +148,14 @@ def initArgumentParser():
             '-V',
             '--font-version',
             help='Font version to use for generated font (default: taken from first BDF file).'
+    )
+    argParser.add_argument(
+            '-e',
+            '--vendor',
+            type=arg_vendor_id,
+            default='PfEd',  # "PfEd" is the value FontForge writes when using the GUI
+            help='OS/2 vendor ID (aka font foundry ID) to include in the generated font. This is a four-character '
+                 'string of printable ASCII characters, possibly padded with trailing spaces. Default: %(default)s'
     )
     argParser.add_argument(
             '-a',
@@ -280,8 +300,7 @@ if args.append_copyright is not None:
 
 # FontForge won't write the OS/2 table unless we set a vendor and we set it BEFORE modifying
 # the OS/2 table in any way (although this is not documented anywhere...).
-# "PfEd" is the value FontForge writes when using the GUI.
-baseFont.os2_vendor = 'PfEd'
+baseFont.os2_vendor = args.vendor
 
 # Newer FontForge releases require us to manually set the macStyle
 # and fsSelection (aka "StyleMap") fields in the OS/2 table.

@@ -160,6 +160,7 @@ for weight in Normal Bold Italic 'Bold Italic'; do
 		-f "${NICEFONTNAME}" -n "${FONTNAME}${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "${NICEFONTNAME}${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
+		-e AX86 \
 		-A ' -a 0' -V "${FONTVER}" -O \
 		"$@" \
 		"$SRCDIR"/ter-u*"${FILE_SUFFIX}.bdf"
