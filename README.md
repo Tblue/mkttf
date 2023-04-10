@@ -12,15 +12,15 @@ and "Italic") in the current working directory.
 To use `mktff.py`, you need the following tools installed in your PATH:
   - [FontForge](http://fontforge.sf.net): This tool and its Python extension
     enable me to modify the font using Python. You need a version that has
-    Python support enabled (i. e. provides a Python extension).
+    Python 3 support enabled (i. e. provides a Python 3 extension).
   - [Potrace](http://potrace.sf.net): To generate the scalable outlines.
-  - A recent version of [Python](http://python.org). Whether you have to choose
-    Python 2 or Python 3 depends on how your version of FontForge was built:
-    FontForge can either be built with support for Python 2 or with support for
-    Python 3. `mkttf.py` supports both versions.
+  - A recent version of [Python](http://python.org) 3.
+  - [ImageMagick](https://imagemagick.org/): To upscale the bitmaps before tracing
+    them with Potrace. This is done to improve the accuracy of the Potrace algorithm.
+  - [Bash](https://www.gnu.org/software/bash/): Should be already installed on
+    most Linux systems.
 
 To use `mkttf.sh`, you additionally need the following programs in your path:
-  - Obviously, you need a POSIX-compliant shell.
   - [mkitalic](http://hp.vector.co.jp/authors/VA013651/freeSoftware/mkbold-mkitalic.html):
     To generate the italic font.
 

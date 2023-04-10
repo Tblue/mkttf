@@ -3,7 +3,7 @@
 # This Python script uses FontForge to convert a set of BDF files into a
 # TrueType font (TTF) and an SFD file.
 # 
-# Copyright (c) 2013-2021 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+# Copyright (c) 2013-2023 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ from __future__ import print_function
 
 import argparse
 import fontforge
+import os.path
 import sys
 from itertools import dropwhile
 
@@ -143,6 +144,21 @@ def initArgumentParser():
             help='Prefer AutoTrace over Potrace, if possible (default: %(default)s).'
     )
     argParser.add_argument(
+            '-t',
+            '--tracer-path',
+            metavar='TRACER_PATH',
+            default=os.path.join(
+                os.path.dirname(os.path.realpath(sys.argv[0])),
+                'potrace-wrapper.sh'
+            ),
+            help='Path to AutoTrace/Potrace. If this is set to the empty string, FontForge will use the value of the '
+                 '"POTRACE" (or "AUTOTRACE") environment variable, and fall back to the value "potrace" (or '
+                 '"autotrace") if the variable is unset. In that case, which of those variables/values is used depends '
+                 'on whether the "--prefer-autotrace" option was specified. Note that if you want this program to be '
+                 'called with Potrace-compatible arguments, %(metavar)s *must* include the string "potrace". This is a '
+                 'FontForge limitation. Default: %(default)s'
+    )
+    argParser.add_argument(
             '-A',
             '--tracer-args',
             default='',
@@ -193,12 +209,43 @@ def setFontAttrsFromArgs(font, args):
             )
 
 
+def setTracerPathFromArgs(args):
+    """Tell FontForge which autotrace program to use, based on our own program arguments.
+
+    This sets either the AUTOTRACE or the POTRACE environment variable of this process (or no environment variable at
+    all if we want FontForge to figure out the autotrace program itself).
+
+    args is an argparse.Namespace.
+
+    """
+    if not args.tracer_path:
+        # Let FontForge figure out the path to the autotrace program itself.
+        return
+
+    if args.prefer_autotrace:
+        if 'potrace' in args.tracer_path:
+            sys.exit(
+                'Error: When "--prefer-autotrace" is specified, "--tracer-path" must NOT include the substring '
+                '"potrace". This is a FontForge limitation.'
+            )
+
+        os.environ['AUTOTRACE'] = args.tracer_path
+    elif 'potrace' not in args.tracer_path:
+        sys.exit(
+            'Error: When "--prefer-autotrace" is NOT specified, "--tracer-path" MUST include the substring "potrace". '
+            'This is a FontForge limitation.'
+        )
+    else:
+        os.environ['POTRACE'] = args.tracer_path
+
+
 # Parse the command line arguments.
 args = initArgumentParser().parse_args()
 
 # Set FontForge options.
 fontforge.setPrefs("PreferPotrace", not args.prefer_autotrace)
 fontforge.setPrefs("AutotraceArgs", args.tracer_args)
+setTracerPathFromArgs(args)
 
 # Good, can we open the base font?
 try:

@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 #       This script uses fontforge and mkitalic to generate medium, bold and
 #       italic TTF versions of the terminus font from its BDF files.
 #
-#       Copyright (c) 2009-2021 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2009-2023 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
@@ -156,11 +156,11 @@ for weight in Normal Bold Italic 'Bold Italic'; do
 		FILE_SUFFIX=$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]')
 	fi
 
-	"${MYDIR}/mkttf.py" \
+	time "${MYDIR}/mkttf.py" \
 		-f "${NICEFONTNAME}" -n "${FONTNAME}${WEIGHT_NAME:+"-${WEIGHT_NAME}"}" \
 		-N "${NICEFONTNAME}${WEIGHT_NAME:+" ${WEIGHT_NAME}"}" \
 		-C "; Copyright (C) $(date '+%Y') Tilman Blumenbach; Licensed under the SIL Open Font License, Version 1.1" \
-		-A ' -a -1' -V "${FONTVER}" -O \
+		-A ' -a 0' -V "${FONTVER}" -O \
 		"$@" \
 		"$SRCDIR"/ter-u*"${FILE_SUFFIX}.bdf"
 
