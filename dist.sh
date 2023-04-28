@@ -69,7 +69,8 @@ if [ -z "$ZIP_ONLY" ]; then
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTF" "Terminus (TTF)"
 fi
 
-bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${VARIANT}${FONTVER}.zip" \
+bsdtar -c --format zip --gid 0 --uid 0 --options compression-level=9 \
+    -f "../terminus-ttf-${VARIANT}${FONTVER}.zip" \
     -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${VARIANT}${FONTVER}/COPYING|" \
     -s "|^.*/|terminus-ttf-${VARIANT}${FONTVER}/|" \
     {Normal,Bold,Italic,Bold-Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
