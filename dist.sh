@@ -7,7 +7,7 @@
 #       name (and used for the base directory inside the archive).
 #
 #
-#       Copyright (c) 2013-2021 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
+#       Copyright (c) 2013-2023 by Tilman Blumenbach <tilman [AT] ax86 [DOT] net>
 #       All rights reserved.
 #       
 #       Redistribution and use in source and binary forms, with or without
