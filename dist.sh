@@ -65,14 +65,14 @@ mkdir -p other_systems
 cd other_systems
 
 if [ -z "$ZIP_ONLY" ]; then
-    rm -rf Normal Bold Italic 'Bold Italic'
+    rm -rf Normal Bold Italic Bold-Italic
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTF" "Terminus (TTF)"
 fi
 
 bsdtar -c --format zip --gid 0 --uid 0 -f "../terminus-ttf-${VARIANT}${FONTVER}.zip" \
     -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${VARIANT}${FONTVER}/COPYING|" \
     -s "|^.*/|terminus-ttf-${VARIANT}${FONTVER}/|" \
-    {Normal,Bold,Italic,Bold\ Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
+    {Normal,Bold,Italic,Bold-Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
 
 
 # 2. Generate fonts WITH Windows-specific fixes and zip them.
@@ -80,7 +80,7 @@ mkdir -p ../windows
 cd ../windows
 
 if [ -z "$ZIP_ONLY" ]; then
-    rm -rf Normal Bold Italic 'Bold Italic'
+    rm -rf Normal Bold Italic Bold-Italic
     "${MYDIR}/mkttf.sh" "${FONTSRCDIR}" "${FONTVER}" "TerminusTTFWindows" "Terminus (TTF) for Windows" -s
 fi
 
@@ -88,4 +88,4 @@ bsdtar -c --format zip --gid 0 --uid 0 --options compression-level=9 \
     -f "../terminus-ttf-${VARIANT}${FONTVER}-windows.zip" \
     -s "|^.*/terminus_ttf_distribution_license\.txt$|terminus-ttf-${VARIANT}${FONTVER}-windows/COPYING|" \
     -s "|^.*/|terminus-ttf-${VARIANT}${FONTVER}-windows/|" \
-    {Normal,Bold,Italic,Bold\ Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"
+    {Normal,Bold,Italic,Bold-Italic}/*.ttf "${MYDIR}/terminus_ttf_distribution_license.txt"

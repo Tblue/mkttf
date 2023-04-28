@@ -125,7 +125,7 @@ if [ -n "$SRCDIR_TEST" -a ! -e "${SRCDIR}/${SRCDIR_TEST}" ]; then
 fi
 
 # -p to suppress errors.
-mkdir -p Normal Bold Italic 'Bold Italic' || error 4 'Could not create target directories.'
+mkdir -p Normal Bold Italic Bold-Italic || error 4 'Could not create target directories.'
 
 ##################################################
 # NOTE: The following code is Terminus-specific! #
@@ -140,7 +140,7 @@ for bdf in "$SRCDIR"/ter-u*n.bdf; do
 done
 
 # Generate the TTF fonts.
-for weight in Normal Bold Italic 'Bold Italic'; do
+for weight in Normal Bold Italic Bold-Italic; do
 	echo "Generating ${weight} font..."
 	cd "$weight"
 
@@ -150,7 +150,7 @@ for weight in Normal Bold Italic 'Bold Italic'; do
 		unset WEIGHT_NAME
 	fi
 
-	if [ "${weight}" = 'Bold Italic' ]; then
+	if [ "${weight}" = Bold-Italic ]; then
 		FILE_SUFFIX=BI
 	else
 		FILE_SUFFIX=$(echo "$weight"|cut -b 1|tr '[:upper:]' '[:lower:]')
